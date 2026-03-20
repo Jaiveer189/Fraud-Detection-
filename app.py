@@ -4,16 +4,25 @@ import os
 import gdown
 import numpy as np
 
-if not os.path.exists("model.pkl"):
-    url = "https://drive.google.com/file/d/18fQ3pGilBp47D6SauiLuQ-8Ub4W2wM0I/view?usp=drive_link"
-    gdown.download(url, "model.pkl", quiet=False)
-model = pickle.load(open('model.pkl', 'rb'))
+MODEL_PATH = "model.pkl"
+
+# download model if not exists
+if not os.path.exists(MODEL_PATH):
+    url = "https://drive.google.com/uc?id=18fQ3pGilBp47D6SauiLuQ-8Ub4W2wM0I"
+    try:
+        gdown.download(url, MODEL_PATH, quiet=False)
+    except Exception as e:
+        st.error("Model download failed. Check link or permissions.")
+        st.stop()
+
+# load model & scaler
+model = pickle.load(open(MODEL_PATH, 'rb'))
 scaler = pickle.load(open('scaler.pkl', 'rb'))
 
 st.title("Fraud Detection System")
 
 features = []
-for i in range(30):  # dataset has 30 features
+for i in range(30):
     val = st.number_input(f"Feature {i}")
     features.append(val)
 
